@@ -19,12 +19,14 @@ window.onload = function() {
     let startX, startY;
 
     document.addEventListener("touchstart", function(event) {
+        event.preventDefault(); // Prevent default touch behavior
         const touch = event.touches[0];
         startX = touch.clientX;
         startY = touch.clientY;
     }, false);
 
     document.addEventListener("touchend", function(event) {
+        event.preventDefault(); // Prevent default touch behavior
         const touch = event.changedTouches[0];
         const diffX = touch.clientX - startX;
         const diffY = touch.clientY - startY;
