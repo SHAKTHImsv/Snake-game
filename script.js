@@ -2,7 +2,7 @@ var blockSize = 25;
 var rows = 20;
 var cols = 20;
 var board;
-var context;
+var context;  
 var snakeX, snakeY;
 var velocityX = 0;
 var velocityY = 0;
@@ -11,6 +11,8 @@ var snakeBody = [];
 var foodX;
 var foodY;
 var gameInterval;
+
+let touchStartX, touchStartY;
 
 window.onload = function() {
     resetGame();
@@ -38,6 +40,43 @@ function resetGame() {
     // Start the game loop
     gameInterval = setInterval(update, 1000 / 10);
     document.addEventListener("keyup", changeDirection);
+    
+    // Touch event listeners
+    board.addEventListener("touchstart", (e) => {
+        const touch = e.touches[0];
+        touchStartX = touch.clientX;
+        touchStartY = touch.clientY;
+    });
+
+    board.addEventListener("touchmove", (e) => {
+        const touch = e.touches[0];
+        const deltaX = touch.clientX - touchStartX;
+        const deltaY = touch.clientY - touchStartY;
+
+        // Determine swipe direction
+        if (Math.abs(deltaX) > Math.abs(deltaY)) {
+            // Horizontal swipe
+            if (deltaX > 0 && velocityX !== -1) { // Right
+                velocityX = 1;
+                velocityY = 0;
+            } else if (deltaX < 0 && velocityX !== 1) { // Left
+                velocityX = -1;
+                velocityY = 0;
+            }
+        } else {
+            // Vertical swipe
+            if (deltaY > 0 && velocityY !== -1) { // Down
+                velocityX = 0;
+                velocityY = 1;
+            } else if (deltaY < 0 && velocityY !== 1) { // Up
+                velocityX = 0;
+                velocityY = -1;
+            }
+        }
+
+        // Prevent scrolling
+        e.preventDefault();
+    });
 }
 
 function update() {
